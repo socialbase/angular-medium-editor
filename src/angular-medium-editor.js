@@ -41,18 +41,25 @@ angular.module('angular-medium-editor', [])
             return true;
           }
         };
-
-        ngModel.editor.subscribe('editableInput', function (event, editable) {
-          ngModel.$setViewValue(editable.innerHTML.trim());
-        });
+        
+	subscribeToChanges();
 
         scope.$watch('bindOptions', function(bindOptions) {
-          ngModel.editor.init(iElement, bindOptions);
+          ngModel.editor.destroy();
+          ngModel.editor = new MediumEditor(iElement, bindOptions);
+          
+          subscribeToChanges();
         });
 
         scope.$on('$destroy', function() {
           ngModel.editor.destroy();
         });
+
+        function subscribeToChanges() {
+          ngModel.editor.subscribe('editableInput', function (event, editable) {
+            ngModel.$setViewValue(editable.innerHTML.trim());
+          });
+        }
       }
     };
 
